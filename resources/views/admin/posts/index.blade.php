@@ -36,6 +36,11 @@
                                     <a class="btn btn-warning" href="{{ route('admin.posts.edit', ['post' => $post->id ]) }}">
                                         Modifica
                                     </a>
+                                    <form class="" action="{{ route('admin.posts.destroy', ['post' => $post->id])}}" method="post">
+                                        @method('DELETE')
+                                        @csrf
+                                        <input class="btn btn-danger" type="submit" value="Cancella">
+                                    </form>
                                 </td>
                             </tr>
                         @empty
