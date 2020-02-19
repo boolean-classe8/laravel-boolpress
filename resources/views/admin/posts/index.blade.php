@@ -4,7 +4,10 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-12">
-                <h1>Lista di tutti i post per la gestione admin</h1>
+                <h1 class="pull-left">Lista di tutti i post per la gestione admin</h1>
+                <a class="btn btn-success pull-right" href="{{ route('admin.posts.create') }}">
+                    Crea nuovo post
+                </a>
             </div>
         </div>
         <div class="row">
