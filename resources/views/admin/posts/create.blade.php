@@ -5,7 +5,7 @@
         <div class="row">
             <div class="col-sm-12">
                 <h1 class="post-title">Creazione nuovo post</h1>
-                <form class="" action="{{ route('admin.posts.store') }}" method="post">
+                <form class="" action="{{ route('admin.posts.store') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="form-group">
                         <label for="title">Title</label>
@@ -18,6 +18,10 @@
                     <div class="form-group">
                         <label for="content">Testo articolo</label>
                         <textarea class="form-control" id="content" placeholder="Inizia a scrivere un bellissimo articolo..." name="content" rows="8"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="cover_image_file">Immagine di copertina</label>
+                        <input type="file" class="form-control-file" id="cover_image_file" name="cover_image_file">
                     </div>
                     <div class="form-group">
                         <input type="submit" class="btn btn-primary" value="Crea">

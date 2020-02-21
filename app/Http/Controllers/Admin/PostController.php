@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Post;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -39,8 +40,16 @@ class PostController extends Controller
     public function store(Request $request)
     {
         $dati = $request->all();
+
         $post = new Post();
         $post->fill($dati);
+
+        if(!empty($dati['cover_image_file'])) {
+            $cover_image = $dati['cover_image_file'];
+            $cover_image_path = Storage::put('uploads', $cover_image);
+            $post->cover_image = $cover_image_path;
+        }
+
         $slug_originale = Str::slug($dati['title']);
         $slug = $slug_originale;
         // verifico che nel db non esista uno slug uguale
@@ -92,6 +101,20 @@ class PostController extends Controller
     {
         $post = Post::find($id);
         $dati = $request->all();
+
+        if(!empty($dati['cover_image_file'])) {
+            // se il post aveva già un'immagine di copertina, la cancello prima di collegare quella nuova
+            if(!empty($post->cover_image)) {
+                // cancello l'immagine precedente
+                Storage::delete($post->cover_image);
+            }
+            // carico la nuova immagine
+            $cover_image = $dati['cover_image_file'];
+            $cover_image_path = Storage::put('uploads', $cover_image);
+            // assegno l'indirizzo della nuova immagine al post
+            $dati['cover_image'] = $cover_image_path;
+        }
+
         $post->update($dati);
         return redirect()->route('admin.posts.index');
     }
@@ -105,6 +128,8 @@ class PostController extends Controller
     public function destroy($id)
     {
         $post = Post::find($id);
+        $post_image = $post->cover_image;
+        Storage::delete($post_image);
         $post->delete();
         return redirect()->route('admin.posts.index');
     }
