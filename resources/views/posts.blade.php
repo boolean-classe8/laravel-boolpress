@@ -16,6 +16,7 @@
                         <li>Non ci sono ancora post</li>
                     @endforelse
                 </ul>
+                {{ $posts->links() }}
             </div>
         </div>
     </div>

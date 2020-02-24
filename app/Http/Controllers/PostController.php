@@ -8,7 +8,7 @@ use App\Post;
 class PostController extends Controller
 {
     public function index() {
-        $posts = Post::all();
+        $posts = Post::paginate(7);
         return view('posts', ['posts' => $posts]);
     }
 

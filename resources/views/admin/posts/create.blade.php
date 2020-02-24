@@ -23,6 +23,19 @@
                         <label for="cover_image_file">Immagine di copertina</label>
                         <input type="file" class="form-control-file" id="cover_image_file" name="cover_image_file">
                     </div>
+                    @if($categories->count() > 0)
+                        <select class="form-group" name="category_id">
+                            <option value="">Seleziona la categoria</option>
+                            @foreach ($categories as $category)
+                                <option value="{{ $category->id }}">
+                                    {{ $category->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    @else
+                        <a href="#">Aggiungi la prima categoria</a>
+                    @endif
+
                     <div class="form-group">
                         <input type="submit" class="btn btn-primary" value="Crea">
                     </div>
