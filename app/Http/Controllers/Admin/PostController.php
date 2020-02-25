@@ -46,6 +46,14 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
+
+        $request->validate([
+            'title' => 'required|max:255',
+            'author' => 'required|max:255',
+            'content' => 'required',
+            'cover_image_file' => 'image'
+        ]);
+
         // recupero tutti i dati del form
         $dati = $request->all();
 
@@ -128,6 +136,13 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'title' => 'required|max:255',
+            'author' => 'required|max:255',
+            'content' => 'required',
+            'cover_image_file' => 'image'
+        ]);
+
         // recupero il post dal db
         $post = Post::find($id);
         $dati = $request->all();
