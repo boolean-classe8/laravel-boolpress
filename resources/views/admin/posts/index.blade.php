@@ -18,6 +18,7 @@
                             <th>ID</th>
                             <th>Titolo</th>
                             <th>Categoria</th>
+                            <th>Tag</th>
                             <th>Slug</th>
                             <th>Autore</th>
                             <th>Azioni</th>
@@ -29,20 +30,33 @@
                                 <td>{{ $post->id }}</td>
                                 <td>{{ $post->title }}</td>
                                 <td>{{ $post->category ? $post->category->name : '-' }}</td>
+                                <td>
+                                    @forelse ($post->tags as $tag)
+                                        {{ $tag->name }}{{ $loop->last ? '' : ',' }}
+                                    @empty
+                                        -
+                                    @endforelse
+                                </td>
                                 <td>{{ $post->slug }}</td>
                                 <td>{{ $post->author }}</td>
                                 <td>
-                                    <a class="btn btn-info" href="{{ route('admin.posts.show', ['post' => $post->id ]) }}">
-                                        Visualizza
-                                    </a>
-                                    <a class="btn btn-warning" href="{{ route('admin.posts.edit', ['post' => $post->id ]) }}">
-                                        Modifica
-                                    </a>
-                                    <form class="" action="{{ route('admin.posts.destroy', ['post' => $post->id])}}" method="post">
-                                        @method('DELETE')
-                                        @csrf
-                                        <input class="btn btn-danger" type="submit" value="Cancella">
-                                    </form>
+                                    <p>
+                                        <a class="btn btn-info" href="{{ route('admin.posts.show', ['post' => $post->id ]) }}">
+                                            Visualizza
+                                        </a>
+                                    </p>
+                                    <p>
+                                        <a class="btn btn-warning" href="{{ route('admin.posts.edit', ['post' => $post->id ]) }}">
+                                            Modifica
+                                        </a>
+                                    </p>
+                                    <p>
+                                        <form class="" action="{{ route('admin.posts.destroy', ['post' => $post->id])}}" method="post">
+                                            @method('DELETE')
+                                            @csrf
+                                            <input class="btn btn-danger" type="submit" value="Cancella">
+                                        </form>
+                                    </p>
                                 </td>
                             </tr>
                         @empty
