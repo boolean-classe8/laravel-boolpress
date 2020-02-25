@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Post;
 use App\Category;
+use App\Tag;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
@@ -30,7 +31,11 @@ class PostController extends Controller
     public function create()
     {
         $categories = Category::all();
-        return view('admin.posts.create', ['categories' => $categories]);
+        $tags = Tag::all();
+        return view('admin.posts.create', [
+            'categories' => $categories,
+            'tags' => $tags
+        ]);
     }
 
     /**
@@ -41,30 +46,46 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
+        // recupero tutti i dati del form
         $dati = $request->all();
 
+        // creo un nuovo oggetto post
         $post = new Post();
+        // compilo tutti i dati compilabili in automatico
         $post->fill($dati);
 
         if(!empty($dati['cover_image_file'])) {
+            // l'utente ha impostato un'Immagine
             $cover_image = $dati['cover_image_file'];
+            // carico l'immagine
             $cover_image_path = Storage::put('uploads', $cover_image);
+            // assegno la path dell'immagine al post
             $post->cover_image = $cover_image_path;
         }
 
+        // recupero il titolo e genero lo slug corrispondente
         $slug_originale = Str::slug($dati['title']);
         $slug = $slug_originale;
         // verifico che nel db non esista uno slug uguale
         $post_stesso_slug = Post::where('slug', $slug)->first();
         $slug_trovati = 1;
+        // ciclo finché non trovo uno slug libero (non ancora esistente)
         while(!empty($post_stesso_slug)) {
             $slug = $slug_originale . '-' . $slug_trovati;
             $post_stesso_slug = Post::where('slug', $slug)->first();
             $slug_trovati++;
         }
+        // assegno lo slug
         $post->slug = $slug;
+        // salvo il post a db
         $post->save();
 
+        if(!empty($dati['tag_id'])) {
+            // sono stati selezionati dei tag => li assegno al post
+            $post->tags()->sync($dati['tag_id']);
+        }
+
+        // faccio redirect all'homepage admin dei post
         return redirect()->route('admin.posts.index');
     }
 
@@ -90,7 +111,12 @@ class PostController extends Controller
     {
         $post = Post::find($id);
         $categories = Category::all();
-        return view('admin.posts.edit', ['post' => $post, 'categories' => $categories]);
+        $tags = Tag::all();
+        return view('admin.posts.edit', [
+            'post' => $post,
+            'categories' => $categories,
+            'tags' => $tags
+        ]);
     }
 
     /**
@@ -102,6 +128,7 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // recupero il post dal db
         $post = Post::find($id);
         $dati = $request->all();
 
@@ -118,7 +145,15 @@ class PostController extends Controller
             $dati['cover_image'] = $cover_image_path;
         }
 
+        // aggiorno il post
         $post->update($dati);
+
+        if(!empty($dati['tag_id'])) {
+            // sono stati selezionati dei tag => li assegno al post
+            $post->tags()->sync($dati['tag_id']);
+        }
+
+        // faccio redirect all'homepage admin dei post
         return redirect()->route('admin.posts.index');
     }
 
@@ -132,7 +167,13 @@ class PostController extends Controller
     {
         $post = Post::find($id);
         $post_image = $post->cover_image;
-        Storage::delete($post_image);
+        if(!empty($post_image)) {
+            // elimino l'immagine di copertina
+            Storage::delete($post_image);
+        }
+        if($post->tags->isNotEmpty()) {
+            $post->tags()->sync([]);
+        }
         $post->delete();
         return redirect()->route('admin.posts.index');
     }

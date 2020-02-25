@@ -14,6 +14,13 @@
                 @if(!empty($post->category))
                     <p>Categoria: <a href="{{ route('blog.category', ['slug' => $post->category->slug]) }}">{{ $post->category->name }}</a></p>
                 @endif
+                @if(($post->tags)->isNotEmpty())
+                    <p>Tags:
+                        @foreach ($post->tags as $tag)
+                            {{ $tag->name }}{{ $loop->last ? '' : ',' }}
+                        @endforeach
+                    </p>
+                @endif
                 <p><em>{{ $post->author }}</em></p>
             </div>
         </div>
