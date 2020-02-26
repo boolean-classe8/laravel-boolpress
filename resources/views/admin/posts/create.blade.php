@@ -49,8 +49,9 @@
                         <p>Seleziona i tag per questo post:</p>
                         @foreach ($tags as $tag)
                             <label for="tag_{{ $tag->id }}">
-                                <input id="tag_{{ $tag->id }}" type="checkbox" name="tag_id[]" value="{{ $tag->id }}"
-                                {{ in_array($tag->id, old('tag_id')) ? 'checked' : '' }}>
+                                <input id="tag_{{ $tag->id }}" type="checkbox"
+                                name="tag_id[]" value="{{ $tag->id }}"
+                                {{ in_array($tag->id, old('tag_id', array())) ? 'checked' : '' }}>
                                 {{ $tag->name }}
                             </label>
                         @endforeach

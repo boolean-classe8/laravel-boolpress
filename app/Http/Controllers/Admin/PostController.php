@@ -166,6 +166,8 @@ class PostController extends Controller
         if(!empty($dati['tag_id'])) {
             // sono stati selezionati dei tag => li assegno al post
             $post->tags()->sync($dati['tag_id']);
+        } else {
+            $post->tags()->sync([]);
         }
 
         // faccio redirect all'homepage admin dei post
