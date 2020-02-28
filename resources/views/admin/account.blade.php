@@ -13,7 +13,12 @@
                     <ul>
                         <li>Nome: {{ $user_details->firstname }}</li>
                         <li>Cognome: {{ $user_details->lastname }}</li>
+                        <li>API token: {{ Auth::user()->api_token ?? '-'}}</li>
                     </ul>
+                    <form action="{{ route('admin.token') }}" method="post">
+                        @csrf
+                        <input class="btn btn-primary" type="submit" value="Richiedi api_token">
+                    </form>
                 </div>
             </div>
         </div>
