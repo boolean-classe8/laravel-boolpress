@@ -4,7 +4,7 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-12">
-                <h1>Contattaci!</h1>
+                <h1>{{ __('messages.contact_title') }}</h1>
                 <form action="{{ route('contatti.store') }}" method="post">
                     @csrf
                     <div class="form-group">

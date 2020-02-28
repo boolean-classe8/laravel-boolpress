@@ -10,16 +10,21 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::group(
+    [
+        'prefix' => LaravelLocalization::setLocale(),
+        'middleware' => [ 'localize' ]
+    ], function() {
+        Route::get('/', 'HomeController@index')->name('public.home');
+        Route::get(LaravelLocalization::transRoute('routes.contact'), 'HomeController@contatti')->name('contatti.show');
+        Route::post(LaravelLocalization::transRoute('routes.contact'), 'HomeController@contattiStore')->name('contatti.store');
+        Route::get(LaravelLocalization::transRoute('routes.thankyou'), 'HomeController@grazie')->name('contatti.grazie');
 
-Route::get('/', 'HomeController@index')->name('public.home');
-Route::get('/contatti', 'HomeController@contatti')->name('contatti.show');
-Route::post('/contatti', 'HomeController@contattiStore')->name('contatti.store');
-Route::get('/grazie', 'HomeController@grazie')->name('contatti.grazie');
-
-Route::get('/blog', 'PostController@index')->name('blog');
-Route::get('/blog/{slug}', 'PostController@show')->name('blog.show');
-Route::get('/blog/categorie/{slug}', 'PostController@postCategoria')->name('blog.category');
-Route::get('/blog/tag/{slug}', 'PostController@postTag')->name('blog.tag');
+        Route::get(LaravelLocalization::transRoute('routes.blog'), 'PostController@index')->name('blog');
+        Route::get(LaravelLocalization::transRoute('routes.article'), 'PostController@show')->name('blog.show');
+        Route::get(LaravelLocalization::transRoute('routes.category'), 'PostController@postCategoria')->name('blog.category');
+        Route::get(LaravelLocalization::transRoute('routes.tag'), 'PostController@postTag')->name('blog.tag');
+});
 
 Auth::routes(['register' => false]);
 
